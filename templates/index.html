@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{.title}}</title>
+    <style>
+        .form-container {
+            margin: 20px;
+            padding: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input {
+            display: block;
+            margin: 10px 0;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome!</h1>
+    
+    <div class="form-container">
+        <a href="/login">Login with Google</a>
+
+        <form id="loginForm">
+            <h3>Traditional Login</h3>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+
+        <form id="registerForm">
+            <h3>Register</h3>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="text" name="name" placeholder="Name" required>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            await fetch('/login-traditional', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: formData.get('email'),
+                    password: formData.get('password'),
+                }),
+            });
+            window.location.href = '/protected/dashboard';
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: formData.get('email'),
+                    password: formData.get('password'),
+                    name: formData.get('name'),
+                }),
+            });
+            if (response.ok) {
+                window.location.href = '/protected/dashboard';
+            } else {
+                alert('Registration failed');
+            }
+        });
+    </script>
+</body>
+</html>
